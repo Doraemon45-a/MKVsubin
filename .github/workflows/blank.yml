@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1️⃣ Checkout repo
+    # 1️⃣ Checkout repo (pakai versi terbaru)
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     # 2️⃣ Install dependencies
     - name: Install dependencies
@@ -23,15 +23,15 @@ jobs:
       run: |
         mkdir -p ~/.config/rclone
         echo "${{ secrets.RCLONE_CONF_B64 }}" | base64 --decode > ~/.config/rclone/rclone.conf
-        # Debug: pastikan config terbaca
-        cat ~/.config/rclone/rclone.conf
+        # Cek remote terbaca tanpa expose credential
+        rclone listremotes
 
     # 4️⃣ Download MKV file
     - name: Download MKV file
       run: |
         curl -L -o video.mkv "https://tipigd.tipikug.workers.dev/0:/movieb/Karate.Kid.Legends.2025.1080p.BluRay.x265.DD+5.1-Pahe.in.mkv"
 
-    # 5️⃣ Convert MKV ke MP4
+    # 5️⃣ Convert MKV ke MP4 dengan subtitle Indo (si=5)
     - name: Convert MKV to MP4
       run: |
         ffmpeg -i video.mkv \
@@ -41,12 +41,11 @@ jobs:
         -c:a aac -b:a 160k -ac 2 -af "volume=2.5" \
         -movflags +faststart video.mp4
 
-
-    # 6️⃣ Upload ke Google Drive
+    # 6️⃣ Upload ke Google Drive (optimasi speed upload)
     - name: Upload to Google Drive
       run: |
-        rclone copy video.mp4 gdrive:/ConvertedVideos/ -P
+        rclone copy video.mp4 gdrive:/ConvertedVideos/ -P --transfers=4 --checkers=8
 
-    # 7️⃣ Debug list folder (opsional)
+    # 7️⃣ List folder di Google Drive (debug/validasi)
     - name: List files in Google Drive
       run: rclone lsl gdrive:/ConvertedVideos/
