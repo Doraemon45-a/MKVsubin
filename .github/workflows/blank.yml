@@ -29,13 +29,13 @@ jobs:
     # 4️⃣ Download MKV file
     - name: Download MKV file
       run: |
-        curl -L -o video.mkv "https://tipigd.tipikug.workers.dev/0:/movieb/Karate.Kid.Legends.2025.1080p.BluRay.x265.DD+5.1-Pahe.in.mkv"
+        curl -L -o video.mkv "https://tipigd.tipikug.workers.dev/0:/MirrorFolder%20oleh%20kaelamirrorbot/Lilo.and.Stitch.2025.1080p.UHD.BluRay.x265.HDR.DV.DD+5.1-Pahe.in.mkv"
 
     # 5️⃣ Convert MKV ke MP4 dengan subtitle Indo (si=5)
     - name: Convert MKV to MP4
       run: |
         ffmpeg -i video.mkv \
-        -vf "scale=1920:1080,subtitles=video.mkv:si=5:force_style='Fontsize=18,MarginV=25,PrimaryColour=&H0000FFFF'" \
+        -vf "scale=1920:1080,subtitles=video.mkv:si=10:force_style='Fontsize=18,MarginV=25,PrimaryColour=&H0000FFFF'" \
         -r 24 \
         -c:v libx264 -preset veryfast -crf 24 \
         -c:a aac -b:a 160k -ac 2 -af "volume=2.5" \
